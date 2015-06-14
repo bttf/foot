@@ -3,7 +3,7 @@ var router = express.Router();
 var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
     host: 'localhost:9200',
-    log: 'trace'
+    //log: 'trace'
 });
 
 var index = 'sock';
@@ -30,7 +30,8 @@ router.get('/', function(req, res) {
   client.search({
     index: index,
     type: type,
-    q: '*'
+    q: '*',
+    size: 50
   }).then(function (response) {
     var bookmarks = [];
     response.hits.hits.forEach(function(hit) {
