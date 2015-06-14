@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var cors = require('cors');
+var bookmarks = require('./routes/bookmarks');
 
 var app = express();
 
@@ -21,9 +22,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors());
-// app.options('*', cors()); <-- this is redundant, isn't it?
 
 app.use('/', routes);
+app.use('/bookmarks', bookmarks);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {

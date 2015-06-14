@@ -8,9 +8,9 @@ router.post('/', function(req, res) {
     req.body.url, 
     function (errors, window) { 
       var $ = require('jquery')(window);
+
       var title = $('title').html();
       var desc = $('meta[name="description"]').attr('content');
-
       var imgUrl;
       if ($('meta[itemprop="image"]').length) {
         imgUrl = $('meta[itemprop="image"]').attr('content');
@@ -24,16 +24,16 @@ router.post('/', function(req, res) {
         imgUrl = $('meta[name="twitter:image:src"]').attr('content');
       }
 
-      // debug: see all meta tags
-      // $('meta').each(function(i, e) {
-      //   console.log(e.outerHTML);
-      // });
-
       if (imgUrl && imgUrl.indexOf('//') === 0) {
         imgUrl = "http:" + imgUrl;
       } else if (imgUrl && imgUrl.indexOf('http') !== 0) {
         imgUrl = req.body.url + imgUrl;
       }
+      
+      // debug: see all meta tags
+      // $('meta').each(function(i, e) {
+      //   console.log(e.outerHTML);
+      // });
 
       res.json({
         title: title,
