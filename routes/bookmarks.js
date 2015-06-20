@@ -2,28 +2,53 @@ var express = require('express');
 var router = express.Router();
 var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
-    host: 'localhost:9200',
-    //log: 'trace'
+  host: 'localhost:9200',
+  //log: 'trace'
 });
+var jsdom = require('jsdom');
+var url = require('url');
 
 var index = 'sock';
 var type = 'bookmarks';
 
 router.post('/', function(req, res) {
   var bookmark = {};
+  var bmUrl = url.parse(req.body.bookmark.url);
   for (var key in req.body.bookmark) {
     bookmark[key] = req.body.bookmark[key];
   }
-  client.create({
-    index: index,
-    type: type,
-    body: bookmark
-  }).then(function (response) {
-    bookmark.id = response._id;
-    res.json({
-      bookmark: bookmark
-    });
-  });
+  jsdom.env(
+    bookmark.url,
+    function (errors, window) { 
+      var $ = require('jquery')(window);
+      var title = $('title').html();
+      var desc = $('meta[name="description"]').attr('content');
+      var imgUrl = bmUrl.protocol + '//' + bmUrl.host + '/favicon.ico';
+      if ($('link[rel="icon"]').length) {
+        imgUrl = $('link[rel="icon"]').attr('href');
+      } 
+
+      // debug: see all meta tags
+      // $('meta').each(function(i, e) {
+      //   console.log(e.outerHTML);
+      // });
+
+      bookmark.title = title;
+      bookmark.desc = desc;
+      bookmark.imgUrl = imgUrl;
+
+      client.create({
+        index: index,
+        type: type,
+        body: bookmark
+      }).then(function (response) {
+        bookmark.id = response._id;
+        res.json({
+          bookmark: bookmark
+        });
+      });
+    }
+  ); 
 });
 
 router.get('/', function(req, res) {
@@ -31,7 +56,8 @@ router.get('/', function(req, res) {
     index: index,
     type: type,
     q: '*',
-    size: 50
+    size: 50,
+    sort: 'dateCreated:desc'
   }).then(function (response) {
     var bookmarks = [];
     response.hits.hits.forEach(function(hit) {
@@ -39,6 +65,8 @@ router.get('/', function(req, res) {
       bookmark.id = hit._id;
       bookmarks.push(bookmark);
     });
+
+    console.log('bookmarks', bookmarks);
     res.json({
       bookmarks: bookmarks
     });
@@ -68,7 +96,6 @@ router.put('/:id', function(req, res) {
       doc: req.body.bookmark
     }
   }).then(function(response) {
-    console.log(response);
     var bookmark = req.body.bookmark;
     bookmark.id = response._id;
     res.json({
