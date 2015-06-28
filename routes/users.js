@@ -8,6 +8,25 @@ var client = new elasticsearch.Client({ host: 'localhost:9200' });
 var index = 'sock';
 var type = 'users';
 
+router.get('/', function(req, res) {
+  client.search({
+    index: index,
+    type: type,
+    q: '*',
+    size: 100
+  }).then(function (response) {
+    var users = [];
+    response.hits.hits.forEach(function (hit) {
+      var user = hit._source;
+      user.id = hit._id;
+      users.push(user);
+    });
+    res.json({
+      users: users
+    });
+  });
+});
+
 router.get('/:id', function(req, res) {
   client.get({
     index: index,
