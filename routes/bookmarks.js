@@ -1,10 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var elasticsearch = require('elasticsearch');
-var client = new elasticsearch.Client({
-  host: 'localhost:9200',
-  //log: 'trace'
-});
+var client = new elasticsearch.Client({ host: 'localhost:9200' });
 var jsdom = require('jsdom');
 var url = require('url');
 
@@ -27,16 +24,9 @@ router.post('/', function(req, res) {
       if ($('link[rel="icon"]').length) {
         imgUrl = $('link[rel="icon"]').attr('href');
       } 
-
-      // debug: see all meta tags
-      // $('meta').each(function(i, e) {
-      //   console.log(e.outerHTML);
-      // });
-
       bookmark.title = title;
       bookmark.desc = desc;
       bookmark.imgUrl = imgUrl;
-
       client.create({
         index: index,
         type: type,
@@ -65,8 +55,6 @@ router.get('/', function(req, res) {
       bookmark.id = hit._id;
       bookmarks.push(bookmark);
     });
-
-    console.log('bookmarks', bookmarks);
     res.json({
       bookmarks: bookmarks
     });
