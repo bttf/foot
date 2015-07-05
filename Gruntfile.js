@@ -22,7 +22,7 @@ module.exports = function (grunt) {
       server: {
         files: [
           'bin/www',
-          'app.js',
+          './*.js',
           'routes/*.js'
         ],
         tasks: ['develop']

@@ -55,10 +55,16 @@ router.post('/', function(req, res) {
         type: type,
         body: user
       }).then(function (response) {
-        user.id = response._id;
-        res.json({
-          user: user
+        client.indices.refresh({
+          index: index
+        }).then(function() {
+          user.id = response._id;
+          res.json({
+            user: user
+          });
         });
+      }, function (err) {
+        next(err);
       });
     });
   });

@@ -15,10 +15,7 @@ module.exports = new LocalStrategy({
     index: index,
     type: type,
     q: 'email:' + email
-  }, function (err, response) {
-    if (err) {
-      return done(err);
-    }
+  }).then(function (response) {
     if (response.hits.hits.length) {
       var user = response.hits.hits[0]._source;
       var id = response.hits.hits[0]._id;
@@ -36,8 +33,12 @@ module.exports = new LocalStrategy({
           body: {
             doc: { token: token }
           }
-        }).then(function (res) {
-          return done(null, { id: id, token: token });
+        }).then(function (results) {
+          client.indices.refresh({
+            index: 'sock'
+          }).then(function() {
+            return done(null, { id: id, email: email, token: token });
+          });
         }, function (err) {
           return done(err);
         });
@@ -45,5 +46,7 @@ module.exports = new LocalStrategy({
     } else {
       return done(null, false, { message: 'User ' + email + ' not found.' });
     }
+  }, function(err) {
+    return done(err);
   });
 });

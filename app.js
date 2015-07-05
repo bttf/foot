@@ -21,12 +21,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 app.use(passport.initialize());
+app.use(parseToken);
 passport.use(require('./localStrategy'));
+passport.use(require('./bearerStrategy'));
 
 app.use('/', routes);
 app.use('/auth', auth);
-app.use('/bookmarks', bookmarks);
+app.use('/bookmarks', passport.authenticate('bearer', { session: false }), bookmarks);
 app.use('/users', users);
+
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
@@ -54,3 +57,10 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+
+function parseToken(req, res, next) {
+  if (req.headers['auth-token']) {
+    req.query['access_token'] = req.headers['auth-token'];
+  }
+  next();
+}

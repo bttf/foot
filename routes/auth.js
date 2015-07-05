@@ -1,14 +1,39 @@
 var express = require('express');
 var router = express.Router();
-var bcrypt = require('bcrypt');
 var uuid = require('uuid');
 var passport = require('passport');
+var elasticsearch = require('elasticsearch');
+var client = new elasticsearch.Client({ host: 'localhost:9200' });
 
 var index = 'sock';
-var type = 'bookmarks';
+var type = 'users';
 
-router.post('/', passport.authenticate('local', { session: false }), function(req, res) {
+router.post('/', passport.authenticate('local', { session: false }), function (req, res) {
   res.json(req.user);
+});
+
+router.post('/validate', passport.authenticate('bearer', { session: false }), function (req, res) {
+  res.status(200).send('OK');
+});
+
+router.post('/invalidate', passport.authenticate('bearer', { session: false }), function (req, res) {
+  var token = uuid.v4();
+  client.update({
+    index: index,
+    type: type,
+    id: req.user.id,
+    body: {
+      doc: { token: token }
+    }
+  }).then(function (response) {
+    client.indices.refresh({
+      index: 'sock'
+    }).then(function() {
+      res.status(200).send('OK');
+    });
+  }, function (err) {
+    res.status(500).send(err);
+  });
 });
 
 module.exports = router;
