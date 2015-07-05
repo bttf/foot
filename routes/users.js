@@ -27,7 +27,7 @@ router.get('/', function(req, res) {
   });
 });
 
-router.get('/:id', function(req, res) {
+router.get('/:id', function(req, res, next) {
   client.get({
     index: index,
     type: type,
@@ -38,6 +38,8 @@ router.get('/:id', function(req, res) {
     res.json({
       user: user
     });
+  }, function (err) {
+    next(err);
   });
 });
 
@@ -66,6 +68,23 @@ router.post('/', function(req, res) {
       }, function (err) {
         next(err);
       });
+    });
+  });
+});
+
+router.put('/:id', function(req, res) {
+  client.update({
+    index: index,
+    type: type,
+    id: req.params.id,
+    body: {
+      doc: req.body.user
+    }
+  }).then(function (response) {
+    var user = req.body.user;
+    user.id = response._id;
+    res.json({
+      user: user 
     });
   });
 });

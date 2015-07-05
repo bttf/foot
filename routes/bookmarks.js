@@ -61,17 +61,19 @@ router.get('/', function(req, res) {
   });
 });
 
-router.get('/:id', function(req, res) {
+router.get('/:id', function(req, res, next) {
   client.get({
     index: index,
     type: type,
     id: req.params.id
-  }).then(function(response) {
+  }).then(function (response) {
     var bookmark = response._source;
     bookmark.id = response._id;
     res.json({
       bookmark: bookmark
     });
+  }, function (err) {
+    next(err);
   });
 });
 
