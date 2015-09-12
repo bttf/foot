@@ -45,7 +45,7 @@ router.get('/', function(req, res) {
   client.search({
     index: index,
     type: type,
-    q: '*',
+    q: 'user:' + req.user.id,
     size: 50,
     sort: 'dateCreated:desc'
   }).then(function (response) {
