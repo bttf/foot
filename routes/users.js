@@ -2,8 +2,7 @@ var express = require('express');
 var router = express.Router();
 var bcrypt = require('bcrypt');
 var uuid = require('uuid');
-var elasticsearch = require('elasticsearch');
-var client = new elasticsearch.Client({ host: 'localhost:9200' });
+var client = require('../esClient.js');
 
 var index = 'sock';
 var type = 'users';
