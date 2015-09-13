@@ -41,13 +41,13 @@ router.post('/', function(req, res) {
 });
 
 router.get('/', function(req, res) {
-  console.log('debug', client);
   client.search({
     index: index,
     type: type,
     q: 'user:' + req.user.id,
     size: 50,
-    sort: 'dateCreated:desc'
+    sort: 'dateCreated:desc',
+    ignoreUnavailable: false
   }).then(function (response) {
     var bookmarks = [];
     response.hits.hits.forEach(function(hit) {
