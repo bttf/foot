@@ -44,10 +44,17 @@ router.get('/', function(req, res) {
   client.search({
     index: index,
     type: type,
-    q: 'user:' + req.user.id,
+    body: {
+      "sort" : [
+        { "dateCreated" : {"order": "desc", "unmapped_type" : "long"} },
+      ],
+      query: {
+        match: {
+          user: req.user.id
+        }
+      }
+    },
     size: 50,
-    sort: 'dateCreated:desc',
-    ignoreUnavailable: false
   }).then(function (response) {
     var bookmarks = [];
     response.hits.hits.forEach(function(hit) {
