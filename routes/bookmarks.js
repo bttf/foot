@@ -23,7 +23,7 @@ router.post('/', function(req, res) {
       if ($('link[rel="icon"]').length) {
         imgUrl = $('link[rel="icon"]').attr('href');
       } 
-      bookmark.title = title;
+      bookmark.title = title || bookmark.url;
       bookmark.desc = desc;
       bookmark.imgUrl = imgUrl;
       client.create({
