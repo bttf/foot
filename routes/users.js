@@ -17,7 +17,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/:id', function(req, res, next) {
-  User.findById(req.params.user_id, function(err, user) {
+  User.findById(req.params.id, function(err, user) {
     if (err) {
       next(err);
     } else if (!user) {
@@ -45,6 +45,7 @@ router.post('/', function(req, res, next) {
           if (err) {
             next(err);
           }
+
           res.json({
             user: user
           });
@@ -73,6 +74,7 @@ router.put('/:id', function(req, res) {
       if (err) {
         next(err);
       }
+
       res.json({
         user: user
       });
