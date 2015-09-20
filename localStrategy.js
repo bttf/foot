@@ -1,7 +1,6 @@
 var bcrypt = require('bcrypt');
 var uuid = require('uuid');
-var elasticsearch = require('elasticsearch');
-var client = new elasticsearch.Client({ host: 'localhost:9200' });
+var client = require('./esClient');
 var LocalStrategy = require('passport-local').Strategy;
 
 var index = 'sock';

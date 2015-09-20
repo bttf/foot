@@ -8,6 +8,7 @@ var passport = require('passport');
 var bookmarks = require('./routes/bookmarks');
 var users = require('./routes/users');
 var auth = require('./routes/auth');
+var mongoose = require('./mongoClient');
 
 var app = express();
 
