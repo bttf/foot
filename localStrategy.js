@@ -37,7 +37,7 @@ module.exports = new LocalStrategy({
           client.indices.refresh({
             index: 'sock'
           }).then(function() {
-            return done(null, { id: id, email: email, token: token });
+            return done(null, { id: id, email: user.email, token: token });
           });
         }, function (err) {
           return done(err);
