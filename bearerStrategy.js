@@ -1,26 +1,16 @@
 var BearerStrategy = require('passport-http-bearer').Strategy;
-var elasticsearch = require('elasticsearch');
-var client = new elasticsearch.Client({ host: 'localhost:9200' });
-
-var index = 'sock';
-var type = 'users';
+var bcrypt = require('bcrypt');
+var User = require('./models/user');
 
 module.exports = new BearerStrategy(
   function (token, done) {
-    client.search({
-      index: index,
-      type: type,
-      q: 'token:' + token
-    }).then(function (response) {
-      if (response.hits.hits.length) {
-        var id = response.hits.hits[0]._id;
-        var email = response.hits.hits[0]._source.email;
-        return done(null, { id: id, email: email, token: token });
-      } else {
-        return done(null, false);
+    User.findOne({ token: token }, function(err, user) {
+      if (err) {
+        return done(err);
+      } else if (!user) {
+        return done(null, false, { message: 'User not found' } );
       }
-    }, function(err) {
-      return done(err);
+      return done(null, user);
     });
   }
 );
