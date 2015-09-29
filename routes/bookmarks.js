@@ -8,6 +8,34 @@ var index = 'sock';
 var type = 'bookmarks';
 
 router.post('/', function(req, res) {
+  // client.indices.putMapping({
+  //   index: index,
+  //   type: type,
+  //   ignoreConflicts: true,
+  //   body: {
+  //     bookmarks: {
+  //       properties: {
+  //         user: {
+  //           type: 'string',
+  //           index: 'not_analyzed',
+  //         },
+  //       },
+  //     },
+  //   },
+  // }).then(function() {
+  //   console.log('shit happened');
+  //   client.indices.getFieldMapping({
+  //     index: 'sock',
+  //     type: 'bookmarks',
+  //     field: 'user',
+  //     includeDefaults: true,
+  //   }).then(function (mappings) {
+  //     console.log('mappings', JSON.stringify(mappings, null, 2));
+  //   }, function(err) {
+  //     console.log('mappings err', err);
+  //   });
+  // });
+
   var bookmark = {};
   var bmUrl = url.parse(req.body.bookmark.url);
   for (var key in req.body.bookmark) {
@@ -41,6 +69,7 @@ router.post('/', function(req, res) {
 });
 
 router.get('/', function(req, res) {
+  console.log('req.user.id', req.user.id);
   client.search({
     index: index,
     type: type,

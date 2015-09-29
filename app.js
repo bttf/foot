@@ -8,6 +8,7 @@ var passport = require('passport');
 var bookmarks = require('./routes/bookmarks');
 var users = require('./routes/users');
 var auth = require('./routes/auth');
+var search = require('./routes/search');
 var mongoose = require('./mongoClient');
 
 var app = express();
@@ -30,6 +31,7 @@ app.use('/', routes);
 app.use('/auth', auth);
 app.use('/bookmarks', passport.authenticate('bearer', { session: false }), bookmarks);
 app.use('/users', users);
+app.use('/search', passport.authenticate('bearer', { session: false }), search);
 
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
