@@ -1,15 +1,15 @@
-var express = require('express');
-var path = require('path');
-var logger = require('morgan');
+var express    = require('express');
+var path       = require('path');
+var logger     = require('morgan');
 var bodyParser = require('body-parser');
-var routes = require('./routes/index');
-var cors = require('cors');
-var passport = require('passport');
-var bookmarks = require('./routes/bookmarks');
-var users = require('./routes/users');
-var auth = require('./routes/auth');
-var search = require('./routes/search');
-var mongoose = require('./mongoClient');
+var routes     = require('./routes/index');
+var cors       = require('cors');
+var passport   = require('passport');
+var bookmarks  = require('./routes/bookmarks');
+var users      = require('./routes/users');
+var auth       = require('./routes/auth');
+var search     = require('./routes/search');
+var mongoose   = require('./mongoClient');
 
 var app = express();
 

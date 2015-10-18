@@ -1,7 +1,7 @@
 var LocalStrategy = require('passport-local').Strategy;
-var bcrypt = require('bcrypt');
-var uuid = require('uuid');
+var jwt = require('jsonwebtoken');
 var User = require('./models/user');
+var config = require('./config');
 
 module.exports = new LocalStrategy({
   usernameField: 'email',
@@ -20,14 +20,10 @@ module.exports = new LocalStrategy({
       } else if (!res) {
         return done(null, false, { message: 'Invalid password' });
       }
-      user.token = uuid.v4();
-      user.save(function(err) {
-        if (err) {
-          return done(err);
-        } 
-
-        return done(null, user);
+      user.token = jwt.sign(user, config.secret, {
+        expiresIn: '7d',
       });
+      return done(null, user);
     });
   });
 });

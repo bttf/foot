@@ -1,17 +1,14 @@
 var BearerStrategy = require('passport-http-bearer').Strategy;
-var bcrypt = require('bcrypt');
-var User = require('./models/user');
+var jwt = require('jsonwebtoken');
+var config = require('./config');
 
 module.exports = new BearerStrategy(
   function (token, done) {
-    User.findOne({ token: token }, function(err, user) {
+    jwt.verify(token, config.secret, function(err, decoded) {
       if (err) {
         return done(err);
-      } else if (!user) {
-        return done(null, false, { message: 'User not found' } );
-      }
-
-      return done(null, user);
+      } 
+      return done(null, decoded);
     });
   }
 );

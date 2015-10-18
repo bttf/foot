@@ -69,7 +69,6 @@ router.post('/', function(req, res) {
 });
 
 router.get('/', function(req, res) {
-  console.log('req.user.id', req.user.id);
   client.search({
     index: index,
     type: type,
@@ -79,7 +78,7 @@ router.get('/', function(req, res) {
       ],
       query: {
         match: {
-          user: req.user.id
+          user: req.user._id
         }
       }
     },
