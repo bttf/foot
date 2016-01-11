@@ -78,7 +78,7 @@ router.get('/', function(req, res) {
       ],
       query: {
         match: {
-          user: req.user._id
+          user: req.user._doc._id
         }
       }
     },
