@@ -82,7 +82,7 @@ router.get('/', function(req, res) {
         }
       }
     },
-    size: 50,
+    size: 5000,
   }).then(function (response) {
     var bookmarks = [];
     response.hits.hits.forEach(function(hit) {
